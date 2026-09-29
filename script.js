@@ -141,7 +141,6 @@ async function verifyDepositHash() {
         statusEl.innerText = `✅ ${data.message}`;
         hashInput.value = '';
         
-        // Update live balance display
         document.getElementById('user-balance').innerText = `$${parseFloat(data.user.balance).toFixed(2)}`;
     } catch (err) {
         statusEl.style.color = 'var(--danger)';
