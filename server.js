@@ -9,11 +9,12 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname)));
 
-// PostgreSQL Database Connection
-// Render will automatically provide process.env.DATABASE_URL
+// PostgreSQL Database Connection with explicit SSL for Render
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 // Initialize Database Tables on Startup
@@ -39,7 +40,7 @@ async function initDb() {
         `);
         console.log("Database tables initialized successfully.");
     } catch (err) {
-        console.error("Database initialization error:", err);
+        console.error("DATABASE INITIALIZATION ERROR:", err);
     }
 }
 initDb();
@@ -57,10 +58,11 @@ app.post('/api/register', async (req, res) => {
         );
         res.json({ success: true, user: result.rows[0] });
     } catch (err) {
+        console.error("REGISTRATION ERROR:", err);
         if (err.code === '23505') {
             return res.status(400).json({ success: false, message: 'Email or username already exists!' });
         }
-        res.status(500).json({ success: false, message: 'Server error during registration.' });
+        res.status(500).json({ success: false, message: 'Server error during registration: ' + err.message });
     }
 });
 
@@ -84,7 +86,8 @@ app.post('/api/login', async (req, res) => {
             user: { id: user.id, username: user.username, email: user.email, balance: parseFloat(user.balance) } 
         });
     } catch (err) {
-        res.status(500).json({ success: false, message: 'Server error during login.' });
+        console.error("LOGIN ERROR:", err);
+        res.status(500).json({ success: false, message: 'Server error during login: ' + err.message });
     }
 });
 
@@ -95,6 +98,7 @@ app.get('/api/user/:email', async (req, res) => {
         if (result.rows.length === 0) return res.status(404).json({ success: false, message: 'User not found' });
         res.json({ success: true, user: result.rows[0] });
     } catch (err) {
+        console.error("USER FETCH ERROR:", err);
         res.status(500).json({ success: false, message: 'Server error' });
     }
 });
@@ -107,22 +111,19 @@ app.post('/api/verify-deposit', async (req, res) => {
     }
 
     try {
-        // Check if hash was already used
         const checkHash = await pool.query('SELECT * FROM processed_hashes WHERE tx_hash = $1', [txHash]);
         if (checkHash.rows.length > 0) {
             return res.status(400).json({ success: false, message: 'This transaction hash has already been processed.' });
         }
 
-        // Get user ID
         const userRes = await pool.query('SELECT id, balance FROM users WHERE email = $1', [email]);
         if (userRes.rows.length === 0) {
             return res.status(404).json({ success: false, message: 'User not found.' });
         }
 
         const user = userRes.rows[0];
-        const depositAmount = 50.00; // Standard test credit amount per valid hash
+        const depositAmount = 50.00;
 
-        // Execute database transaction update
         await pool.query('BEGIN');
         await pool.query('UPDATE users SET balance = balance + $1 WHERE id = $2', [depositAmount, user.id]);
         await pool.query('INSERT INTO processed_hashes (user_id, tx_hash, amount) VALUES ($1, $2, $3)', [user.id, txHash, depositAmount]);
@@ -133,6 +134,7 @@ app.post('/api/verify-deposit', async (req, res) => {
 
     } catch (err) {
         await pool.query('ROLLBACK');
+        console.error("DEPOSIT ERROR:", err);
         res.status(500).json({ success: false, message: 'Server error processing transaction.' });
     }
 });
@@ -143,6 +145,7 @@ app.get('/api/admin/stats', async (req, res) => {
         const userCount = await pool.query('SELECT COUNT(*) FROM users');
         res.json({ success: true, totalUsers: parseInt(userCount.rows[0].count) });
     } catch (err) {
+        console.error("ADMIN STATS ERROR:", err);
         res.status(500).json({ success: false });
     }
 });
