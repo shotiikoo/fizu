@@ -64,7 +64,7 @@ app.post('/api/deposit', (req, res) => {
   const { hash, currency } = req.body;
   
   if (!validateTransactionHash(hash, currency)) {
-    return.status(400).json({ success: false, message: 'Invalid transaction hash format' });
+    return res.status(400).json({ success: false, message: 'Invalid transaction hash format' });
   }
 
   res.json({ success: true, message: 'Transaction hash verified!' });
