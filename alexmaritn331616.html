@@ -23,60 +23,37 @@
         <!-- Metrics Row -->
         <div class="grid metrics-grid">
             <div class="card metric-card">
-                <h4>Total Users</h4>
-                <p class="metric-number" id="user-count">1,248</p>
+                <h4>Registered Users</h4>
+                <p class="metric-number" id="admin-user-count">0</p>
             </div>
             <div class="card metric-card">
-                <h4>Active Connections</h4>
-                <p class="metric-number">342</p>
+                <h4>Server Status</h4>
+                <p class="metric-number green">Online</p>
             </div>
             <div class="card metric-card">
-                <h4>Server Load</h4>
-                <p class="metric-number green">12%</p>
-            </div>
-            <div class="card metric-card">
-                <h4>Pending Requests</h4>
-                <p class="metric-number orange">5</p>
+                <h4>Security Mode</h4>
+                <p class="metric-number" style="color: var(--accent);">Active</p>
             </div>
         </div>
 
         <!-- Management Table -->
         <div class="card table-card">
             <div class="table-header">
-                <h3>Recent System Logs</h3>
-                <button onclick="addNewLog()" class="btn primary-btn">+ Add Log</button>
+                <h3>System Logs & Activity</h3>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>User / Event</th>
-                        <th>Status</th>
+                        <th>Event Type</th>
+                        <th>Details</th>
                         <th>Timestamp</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
-                <tbody id="logs-table-body">
+                <tbody id="admin-logs-body">
                     <tr>
-                        <td>#1001</td>
-                        <td>System Initialization</td>
-                        <td><span class="badge success">Success</span></td>
-                        <td>Today, 14:32</td>
-                        <td><button onclick="deleteRow(this)" class="btn sm-btn danger-btn">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td>#1002</td>
-                        <td>Database Backup</td>
-                        <td><span class="badge success">Success</span></td>
-                        <td>Today, 12:00</td>
-                        <td><button onclick="deleteRow(this)" class="btn sm-btn danger-btn">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <td>#1003</td>
-                        <td>User Registration</td>
-                        <td><span class="badge warning">Pending</span></td>
-                        <td>Today, 09:15</td>
-                        <td><button onclick="deleteRow(this)" class="btn sm-btn danger-btn">Delete</button></td>
+                        <td>System Init</td>
+                        <td>Admin panel alexmaritn331616 loaded successfully.</td>
+                        <td>Just now</td>
                     </tr>
                 </tbody>
             </table>
