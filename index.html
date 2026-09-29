@@ -159,6 +159,8 @@
             flex-wrap: wrap;
             gap: 8px;
         }
+        .crypto-info { display: flex; align-items: center; gap: 10px; }
+        .crypto-info svg { width: 24px; height: 24px; flex-shrink: 0; }
         .crypto-box code { color: var(--accent-cyan); font-family: monospace; font-size: 13px; word-break: break-all; }
 
         .casino-cabinet {
@@ -257,7 +259,6 @@
     <div class="ambient-bg"></div>
     <canvas class="ambient-canvas" id="ambientCanvas"></canvas>
 
-    <!-- Unified Navbar (Dashboard button removed) -->
     <header class="navbar" id="appNavbar" style="display: none;">
         <div class="logo" onclick="switchView('view-dashboard')">👑 CASINO FIZU</div>
         <div class="nav-btns" id="navActions"></div>
@@ -325,16 +326,30 @@
             <h3 style="margin-bottom: 6px;">Deposit Crypto</h3>
             <p style="color: var(--text-sub); font-size: 13px; margin-bottom: 16px;">Transfer funds to any address below and verify your transaction hash ID to credit your balance automatically.</p>
             
+            <!-- ETH / ERC-20 Logo Box -->
             <div class="crypto-box">
-                <strong>USDC (ERC-20) / ETH:</strong>
+                <div class="crypto-info">
+                    <svg viewBox="0 0 784.37 1277.39" xmlns="http://www.w3.org/2000/svg"><path fill="#627eea" d="M392.07,0L383.5,28.1V872.5L392.07,881.1L784.14,650.54Z"/><path fill="#8a92b2" d="M392.07,0L0,650.54L392.07,881.1V472.33Z"/><path fill="#627eea" d="M392.07,956.52L387.24,962.41V1277.39L392.07,1277.37L784.37,725.89Z"/><path fill="#8a92b2" d="M392.07,1277.39V956.52L0,725.89Z"/><path fill="#iv" d="M392.07,881.1L784.14,650.54L392.07,472.33Z"/><path fill="#454a75" d="M0,650.54L392.07,881.1V472.33Z"/></svg>
+                    <strong>USDC (ERC-20) / ETH:</strong>
+                </div>
                 <code>0x7cC7D071C3e1324DaF3370eFAb03a1a304298765</code>
             </div>
+
+            <!-- BTC Logo Box -->
             <div class="crypto-box">
-                <strong>BTC:</strong>
+                <div class="crypto-info">
+                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path fill="#f7931a" d="M16 32C7.163 32 0 24.837 0 16S7.163 0 16 0s16 7.163 16 16-7.163 16-16 16z"/><path fill="#fff" d="M23.318 14.364c.382-2.545-1.545-3.91-4.182-4.819l.855-3.436-2.091-.527-.837 3.364c-.545-.136-1.109-.255-1.673-.364l.845-3.391-2.091-.527-.855 3.436c-.455-.1-1-.2-1.527-.291L10.74 5.9l-2.018.509.364.918c1.091.273 1.055.991 1.036 1.555l-1.036 4.155c.064.018.127.045.2.073l-.2-.055-1.445 5.8c-.109.273-.382.682-1 .527l-.364-.909-1.982.5 1.345 3.364c.855.218 1.682.327 2.436.145l-.891 3.582 2.091.527.855-3.427c.573.155 1.127.3 1.673.436l-.864 3.455 2.091.527.873-3.509c3.564.673 6.245.4 7.373-2.782.909-2.518-.045-3.973-1.864-4.927 1.327-.309 2.327-1.191 2.591-3.018zm-4.636 6.545c-.627 2.527-4.873 1.164-6.255.818l1.118-4.491c1.382.354 5.782 1.045 5.137 3.673zm.627-6.582c-.573 2.309-4.109 1.136-5.255.855l1.018-4.091c1.145.282 4.836.855 4.237 3.236z"/></svg>
+                    <strong>BTC:</strong>
+                </div>
                 <code>19xQ6qaNyrcyGtZPV6r42zS78Pn7SnSgou</code>
             </div>
+
+            <!-- SOL Logo Box -->
             <div class="crypto-box">
-                <strong>SOL:</strong>
+                <div class="crypto-info">
+                    <svg viewBox="0 0 398.5 304.5" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sol" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ffa3"/><stop offset="100%" stop-color="#dc1fff"/></linearGradient></defs><path fill="url(#sol)" d="M64.6 239.5c-4.4 4.4-10.4 6.9-16.7 6.9H16c-13.3 0-20-16.1-10.6-25.5l59.6-59.6c4.4-4.4 10.4-6.9 16.7-6.9h31.9c13.3 0 20 16.1 10.6 25.5l-59.6 59.6zm317.9-158.4c-4.4-4.4-10.4-6.9-16.7-6.9H333c-13.3 0-20 16.1-10.6 25.5l59.6 59.6c4.4 4.4 10.4 6.9 16.7 6.9h31.9c13.3 0 20-16.1 10.6-25.5l-59.6-59.6zM64.6 72c-4.4-4.4-10.4-6.9-16.7-6.9H16c-13.3 0-20 16.1-10.6 25.5l59.6 59.6c4.4 4.4 10.4 6.9 16.7 6.9h31.9c13.3 0 20-16.1 10.6-25.5L64.6 72zm317.9 158.4c-4.4 4.4-10.4 6.9-16.7 6.9H333c-13.3 0-20-16.1-10.6-25.5l59.6-59.6c4.4-4.4 10.4-6.9 16.7-6.9h31.9c13.3 0 20 16.1 10.6 25.5l-59.6 59.6zM64.6 155.8h318c6.3 0 12.3 2.5 16.7 6.9l21.3 21.3c9.4 9.4 2.7 25.5-10.6 25.5H16c-13.3 0-20-16.1-10.6-25.5l21.3-21.3c4.4-4.4 10.4-6.9 16.7-6.9h22.2z"/></svg>
+                    <strong>SOL:</strong>
+                </div>
                 <code>5csZyW6JuHm4QsinaykoSEy9y1jB3sjGZjM6zdzDe5ii</code>
             </div>
         </div>
@@ -424,7 +439,6 @@
         function renderNavbar() {
             const navActions = document.getElementById('navActions');
             if (!currentUser) return;
-            // Dashboard button completely removed here
             navActions.innerHTML = `
                 <span style="font-size: 13px; color: var(--text-sub);">👤 <strong>${currentUser.username}</strong></span>
                 <button onclick="logoutUser()" class="btn btn-danger">Log Out</button>
@@ -506,7 +520,7 @@
             if (!txHash) { statusEl.style.color = 'var(--danger)'; statusEl.innerText = 'Enter a valid transaction hash.'; return; }
 
             statusEl.style.color = 'var(--text-sub)';
-            statusEl.innerText = 'Checking blockchain explorer for transaction confirmation...';
+            statusEl.innerText = 'Checking blockchain explorer across networks...';
 
             try {
                 const res = await fetch('/api/verify-deposit', {
