@@ -7,33 +7,52 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <!-- Header & Navigation -->
     <header class="navbar">
         <div class="logo">WebPlatform <span>Dashboard</span></div>
-        <nav>
-            <span id="user-display" style="color: var(--text-secondary); margin-right: 1rem;"></span>
+        <nav style="display: flex; align-items: center; gap: 1rem;">
+            <a href="https://royal1899.server" target="_blank" class="btn sm-btn primary-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; text-decoration: none;">🎮 Launch Game</a>
+            <span id="user-display" style="color: var(--text-secondary);"></span>
             <button onclick="logoutUser()" class="btn sm-btn danger-btn">Log Out</button>
         </nav>
     </header>
 
     <div class="container">
-        <!-- Balance Row -->
-        <div class="card" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <!-- Balance & Quick Launch Card -->
+        <div class="card" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div>
-                <h3>Your Current Balance</h3>
+                <h3>Database Account Balance</h3>
                 <p style="font-size: 2.2rem; font-weight: bold; color: var(--success);" id="user-balance">$0.00</p>
             </div>
-            <div style="text-align: right;">
-                <p style="color: var(--text-secondary);">Deposit Address (USDT/SOL/BTC)</p>
-                <code style="background: var(--bg-color); padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem;">0x71C...34F9a</code>
+            <div>
+                <a href="https://royal1899.server" target="_blank" class="btn primary-btn" style="padding: 0.8rem 1.5rem; font-size: 1.1rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; text-decoration: none; display: inline-block;">🎮 Launch Game (Royal 1899)</a>
             </div>
         </div>
 
-        <!-- Deposit Checker Section -->
+        <!-- Deposit Addresses Card -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h3>Deposit Addresses</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Send funds to any of the official addresses below, then copy your transaction Hash ID (TxID) to verify and credit your balance.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem;">
+                <div style="background: var(--bg-color); padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <strong>USDC (ERC-20) / ETH:</strong>
+                    <code style="word-break: break-all; color: var(--accent);">0x7cC7D071C3e1324DaF3370eFAb03a1a304298765</code>
+                </div>
+                <div style="background: var(--bg-color); padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <strong>BTC:</strong>
+                    <code style="word-break: break-all; color: var(--accent);">19xQ6qaNyrcyGtZPV6r42zS78Pn7SnSgou</code>
+                </div>
+                <div style="background: var(--bg-color); padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <strong>SOL:</strong>
+                    <code style="word-break: break-all; color: var(--accent);">5csZyW6JuHm4QsinaykoSEy9y1jB3sjGZjM6zdzDe5ii</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Automated Deposit Verifier Card -->
         <div class="card">
             <h3>Automated Deposit Verifier</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Send crypto to the address above, copy your transaction Hash ID (TxID), and paste it below to instantly credit your balance.</p>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Paste your transaction Hash ID (TxID) below after sending funds to instantly credit your balance.</p>
             
             <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                 <input type="text" id="tx-hash-input" placeholder="Paste Transaction Hash ID (e.g., 0x9f8...)" style="flex: 1; padding: 0.7rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-color); color: white; min-width: 280px;">
@@ -42,7 +61,6 @@
             <p id="deposit-status" style="margin-top: 1rem; font-weight: 600;"></p>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
