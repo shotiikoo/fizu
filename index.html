@@ -11,11 +11,10 @@
     <!-- Header & Navigation -->
     <header class="navbar">
         <div class="logo">WebPlatform</div>
-        <nav>
+        <nav id="nav-menu">
             <a href="index.html" class="active">Home</a>
             <a href="#features">Features</a>
-            <a href="#about">About</a>
-            <a href="alexmaritn331616.html" class="admin-link">Admin Portal</a>
+            <a href="login.html" class="btn sm-btn primary-btn" style="color:white; margin-left:1rem;">Login / Register</a>
         </nav>
     </header>
 
@@ -23,10 +22,10 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Welcome to Your New Web Platform</h1>
-            <p>Fast, responsive, and fully integrated website ready for deployment.</p>
+            <p>Fast, secure, and equipped with automated crypto deposits.</p>
             <div class="hero-buttons">
-                <button id="cta-btn" class="btn primary-btn">Get Started</button>
-                <a href="alexmaritn331616.html" class="btn secondary-btn">Access Admin</a>
+                <a href="register.html" class="btn primary-btn">Get Started</a>
+                <a href="login.html" class="btn secondary-btn">Sign In</a>
             </div>
         </div>
     </section>
@@ -36,26 +35,17 @@
         <h2>Core Features</h2>
         <div class="grid">
             <div class="card">
-                <h3>⚡ High Performance</h3>
-                <p>Clean code architecture designed for fast loading times and smooth user experience.</p>
+                <h3>⚡ Auto-Verification</h3>
+                <p>Instant deposit confirmation via transaction hash ID inputs.</p>
             </div>
             <div class="card">
-                <h3>🔒 Secure Control</h3>
-                <p>Protected custom admin page endpoint built specifically for management tasks.</p>
+                <h3>🔒 Secure Auth</h3>
+                <p>Protected user sessions and a dedicated admin portal.</p>
             </div>
             <div class="card">
                 <h3>📱 Fully Responsive</h3>
-                <p>Seamless design that works automatically on desktops, tablets, and mobile phones.</p>
+                <p>Seamless design that works automatically on all devices.</p>
             </div>
-        </div>
-    </section>
-
-    <!-- Interactive Status Section -->
-    <section class="container text-center">
-        <div class="status-box">
-            <h3>System Status</h3>
-            <p id="status-text">Checking system status...</p>
-            <button onclick="checkStatus()" class="btn outline-btn">Refresh Status</button>
         </div>
     </section>
 
