@@ -1,15 +1,13 @@
 {
   "name": "web-platform",
   "version": "1.0.0",
-  "description": "Full-stack web platform with persistent database",
+  "description": "Casino Fizu Platform",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cors": "^2.8.5",
-    "express": "^4.19.2",
-    "pg": "^8.11.3"
+    "axios": "^1.7.9",
+    "express": "^4.19.2"
   }
 }
