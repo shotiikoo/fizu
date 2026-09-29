@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | Web Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="navbar">
+        <div class="logo">WebPlatform <span>Dashboard</span></div>
+        <nav>
+            <span id="user-display" style="color: var(--text-secondary); margin-right: 1rem;"></span>
+            <button onclick="logoutUser()" class="btn sm-btn danger-btn">Log Out</button>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Balance Row -->
+        <div class="card" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h3>Your Current Balance</h3>
+                <p style="font-size: 2.2rem; font-weight: bold; color: var(--success);" id="user-balance">$0.00</p>
+            </div>
+            <div style="text-align: right;">
+                <p style="color: var(--text-secondary);">Deposit Address (USDT/SOL/BTC)</p>
+                <code style="background: var(--bg-color); padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem;">0x71C...34F9a</code>
+            </div>
+        </div>
+
+        <!-- Deposit Checker Section -->
+        <div class="card">
+            <h3>Automated Deposit Verifier</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Send crypto to the address above, copy your transaction Hash ID (TxID), and paste it below to instantly credit your balance.</p>
+            
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <input type="text" id="tx-hash-input" placeholder="Paste Transaction Hash ID (e.g., 0x9f8...)" style="flex: 1; padding: 0.7rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-color); color: white; min-width: 280px;">
+                <button onclick="verifyDepositHash()" class="btn primary-btn">Verify & Credit</button>
+            </div>
+            <p id="deposit-status" style="margin-top: 1rem; font-weight: 600;"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
