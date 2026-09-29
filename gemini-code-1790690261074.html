@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Platform | Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="navbar">
+        <div class="logo">WebPlatform</div>
+        <nav>
+            <a href="index.html" class="active">Home</a>
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+            <a href="alexmaritn331616.html" class="admin-link">Admin Portal</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Your New Web Platform</h1>
+            <p>Fast, responsive, and fully integrated website ready for deployment.</p>
+            <div class="hero-buttons">
+                <button id="cta-btn" class="btn primary-btn">Get Started</button>
+                <a href="alexmaritn331616.html" class="btn secondary-btn">Access Admin</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="container">
+        <h2>Core Features</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>⚡ High Performance</h3>
+                <p>Clean code architecture designed for fast loading times and smooth user experience.</p>
+            </div>
+            <div class="card">
+                <h3>🔒 Secure Control</h3>
+                <p>Protected custom admin page endpoint built specifically for management tasks.</p>
+            </div>
+            <div class="card">
+                <h3>📱 Fully Responsive</h3>
+                <p>Seamless design that works automatically on desktops, tablets, and mobile phones.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Status Section -->
+    <section class="container text-center">
+        <div class="status-box">
+            <h3>System Status</h3>
+            <p id="status-text">Checking system status...</p>
+            <button onclick="checkStatus()" class="btn outline-btn">Refresh Status</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Web Platform. All rights reserved. | <a href="alexmaritn331616.html">Admin Panel</a></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
