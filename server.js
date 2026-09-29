@@ -1,5 +1,14 @@
 const express = require('express');
 const app = express();
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+// 👉 ADD THIS LINE: Tells Express to serve all static files (HTML, CSS, JS) from your current folder
+app.use(express.static(__dirname));
+
+// (Keep all your existing /api/register, /api/deposit, and game routes below this...)
 app.use(express.json());
 
 // Example in-memory database or user store (replace with your actual database/JSON file logic)
