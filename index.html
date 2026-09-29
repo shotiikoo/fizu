@@ -3,33 +3,733 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Platform | Home</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Casino Fizu - Elite Multiplier Platform</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap');
+
+        :root {
+            --bg-dark: #03050c;
+            --panel-bg: rgba(13, 18, 33, 0.88);
+            --border-glow: rgba(0, 242, 254, 0.25);
+            --accent-cyan: #00f2fe;
+            --accent-purple: #7928ca;
+            --accent-magenta: #ff0080;
+            --success: #00e676;
+            --danger: #ff2a5f;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 15% 20%, rgba(121, 40, 202, 0.22) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(255, 0, 128, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(0, 242, 254, 0.12) 0%, transparent 60%);
+            z-index: -2;
+            filter: blur(40px);
+        }
+
+        .ambient-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* App View Container */
+        .view-container {
+            width: 100%;
+            max-width: 920px;
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .view-container.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Navbar */
+        .navbar {
+            width: 100%;
+            max-width: 920px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            padding: 16px 24px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-btns { display: flex; gap: 10px; align-items: center; }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-purple), var(--accent-magenta)); color: #fff; }
+        .btn-primary:hover { filter: brightness(1.15); transform: translateY(-1px); }
+        .btn-outline { background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); }
+        .btn-danger { background: rgba(255, 42, 95, 0.15); color: var(--danger); border: 1px solid rgba(255, 42, 95, 0.3); }
+
+        /* Auth Cards */
+        .auth-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 40px;
+            max-width: 440px;
+            margin: 40px auto;
+            width: 100%;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+        }
+        .auth-card h2 { font-size: 26px; font-weight: 900; margin-bottom: 8px; }
+        .auth-card p { color: var(--text-sub); font-size: 14px; margin-bottom: 24px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-sub); margin-bottom: 6px; letter-spacing: 1px; }
+        .form-group input {
+            width: 100%;
+            background: rgba(6, 10, 22, 0.9);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .form-group input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,254,0.2); }
+
+        /* Dashboard & Wallet Cards */
+        .card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+
+        .crypto-box {
+            background: rgba(6, 10, 22, 0.8);
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .crypto-box code { color: var(--accent-cyan); font-family: monospace; font-size: 13px; word-break: break-all; }
+
+        /* Game Cabinet */
+        .casino-cabinet {
+            background: var(--panel-bg);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            padding: 28px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .header-bar { display: flex; justify-content: space-between; align-items: center; }
+        .wallet-pill {
+            background: rgba(6, 10, 22, 0.9);
+            border: 1px solid var(--border-glow);
+            padding: 8px 18px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .wallet-pill span { font-size: 10px; text-transform: uppercase; color: var(--text-sub); font-weight: 800; }
+        .wallet-pill strong { font-size: 18px; font-weight: 900; color: var(--accent-cyan); }
+
+        .history-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(6, 10, 22, 0.6);
+            padding: 8px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .history-pill {
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+        }
+        .history-pill.win { background: rgba(0, 230, 118, 0.15); color: var(--success); }
+        .history-pill.bust { background: rgba(255, 42, 95, 0.15); color: var(--danger); }
+
+        .stage-viewport {
+            position: relative;
+            width: 100%;
+            height: 340px;
+            background: radial-gradient(circle at center, rgba(15, 23, 42, 0.8) 0%, rgba(3, 5, 12, 0.95) 100%);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        canvas#gameCanvas { width: 100%; height: 100%; display: block; }
+        .hud-mult { position: absolute; top: 16px; right: 24px; font-size: 46px; font-weight: 900; letter-spacing: -2px; color: #fff; }
+        .hud-badge { position: absolute; top: 18px; left: 24px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; color: var(--text-sub); }
+
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media(max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } }
+
+        .panel-box { background: rgba(6, 10, 22, 0.6); border: 1px solid var(--border); border-radius: 18px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; }
+        .panel-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-sub); font-weight: 800; margin-bottom: 10px; }
+        
+        .input-row input {
+            width: 100%;
+            background: rgba(13, 18, 33, 0.9);
+            border: 1px solid var(--border);
+            color: #fff;
+            font-size: 20px;
+            font-weight: 800;
+            padding: 10px 14px;
+            border-radius: 12px;
+            outline: none;
+        }
+        .quick-bets { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-top: 10px; }
+        .q-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-main); padding: 6px 0; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+        .q-btn:hover { background: rgba(255,255,255,0.15); }
+
+        .btn-giant { width: 100%; padding: 16px; font-size: 18px; font-weight: 900; border: none; border-radius: 14px; cursor: pointer; transition: 0.15s; }
+        .btn-bet { background: linear-gradient(135deg, var(--accent-purple), var(--accent-magenta)); color: #fff; }
+        .btn-inflate { background: linear-gradient(135deg, var(--accent-cyan), #4facfe); color: #03050c; display: none; }
+        .btn-cashout { background: linear-gradient(135deg, var(--success), #00b0ff); color: #03050c; display: none; }
+
+        .win-display { display: flex; justify-content: space-between; align-items: center; background: rgba(0, 230, 118, 0.08); border: 1px solid rgba(0, 230, 118, 0.2); padding: 12px 16px; border-radius: 12px; margin-bottom: 12px; }
+        .win-display span { font-size: 11px; color: var(--success); font-weight: 800; text-transform: uppercase; }
+        .win-display strong { font-size: 20px; color: var(--success); font-weight: 900; }
+    </style>
 </head>
 <body>
-    <header class="navbar">
-        <div class="logo">WebPlatform</div>
-        <nav id="nav-menu" style="display: flex; align-items: center; gap: 1rem;">
-            <a href="index.html" class="active">Home</a>
-            <a href="https://royal1899.server" target="_blank" class="btn sm-btn primary-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; text-decoration: none;">🎮 Launch Game</a>
-            <a href="login.html" class="btn sm-btn primary-btn" style="color:white;">Login / Register</a>
-        </nav>
+
+    <div class="ambient-bg"></div>
+    <canvas class="ambient-canvas" id="ambientCanvas"></canvas>
+
+    <!-- Unified Navbar -->
+    <header class="navbar" id="appNavbar" style="display: none;">
+        <div class="logo" onclick="switchView('view-dashboard')">👑 CASINO FIZU</div>
+        <div class="nav-btns" id="navActions"></div>
     </header>
 
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Secure Database Web Platform</h1>
-            <p>Your accounts, funds, and deposits are safely stored in a secure cloud database.</p>
-            <div class="hero-buttons">
-                <a href="https://royal1899.server" target="_blank" class="btn primary-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🎮 Launch Game Now</a>
-                <a href="register.html" class="btn secondary-btn">Get Started</a>
+    <!-- VIEW 1: LOGIN -->
+    <div class="view-container" id="view-login">
+        <div class="auth-card">
+            <h2>Welcome Back</h2>
+            <p>Log in to manage your balance and play Casino Fizu.</p>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="login-email" required placeholder="alex@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 15px; margin-top: 10px;">Log In</button>
+            </form>
+            <p style="margin-top: 20px; text-align: center; font-size: 13px;">
+                Don't have an account? <a href="#" onclick="switchView('view-register')" style="color: var(--accent-cyan); text-decoration: none; font-weight: 700;">Register</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- VIEW 2: REGISTER -->
+    <div class="view-container" id="view-register">
+        <div class="auth-card">
+            <h2>Create Account</h2>
+            <p>Join the platform to access instant deposits and games.</p>
+            <form onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="reg-username" required placeholder="alexmartin">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="reg-email" required placeholder="alex@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="reg-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 15px; margin-top: 10px;">Register Account</button>
+            </form>
+            <p style="margin-top: 20px; text-align: center; font-size: 13px;">
+                Already have an account? <a href="#" onclick="switchView('view-login')" style="color: var(--accent-cyan); text-decoration: none; font-weight: 700;">Log In</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- VIEW 3: DASHBOARD & DEPOSITS -->
+    <div class="view-container" id="view-dashboard">
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <span style="font-size: 11px; text-transform: uppercase; color: var(--text-sub); font-weight: 800;">Account Balance</span>
+                <p style="font-size: 2.5rem; font-weight: 900; color: var(--success);" id="dash-balance">$0.00</p>
+            </div>
+            <button onclick="switchView('view-game')" class="btn btn-primary" style="padding: 14px 28px; font-size: 16px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));">🎮 Launch Casino Game</button>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom: 6px;">Deposit Crypto</h3>
+            <p style="color: var(--text-sub); font-size: 13px; margin-bottom: 16px;">Transfer funds to any address below and verify your transaction hash ID to credit your balance instantly.</p>
+            
+            <div class="crypto-box">
+                <strong>USDC (ERC-20) / ETH:</strong>
+                <code>0x7cC7D071C3e1324DaF3370eFAb03a1a304298765</code>
+            </div>
+            <div class="crypto-box">
+                <strong>BTC:</strong>
+                <code>19xQ6qaNyrcyGtZPV6r42zS78Pn7SnSgou</code>
+            </div>
+            <div class="crypto-box">
+                <strong>SOL:</strong>
+                <code>5csZyW6JuHm4QsinaykoSEy9y1jB3sjGZjM6zdzDe5ii</code>
             </div>
         </div>
-    </section>
 
-    <footer>
-        <p>&copy; 2026 Web Platform. All rights reserved. | <a href="alexmaritn331616.html">Admin Panel</a></p>
-    </footer>
-    <script src="script.js"></script>
+        <div class="card">
+            <h3 style="margin-bottom: 6px;">Automated Deposit Verifier</h3>
+            <p style="color: var(--text-sub); font-size: 13px; margin-bottom: 16px;">Paste your transaction Hash ID (TxID) below after sending funds.</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" id="tx-hash-input" placeholder="Paste TxID (e.g., 0x9f8...)" style="flex: 1; background: rgba(6,10,22,0.9); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 12px; outline: none; min-width: 260px;">
+                <button onclick="verifyDepositHash()" class="btn btn-primary">Verify & Credit</button>
+            </div>
+            <p id="deposit-status" style="margin-top: 12px; font-weight: 700; font-size: 13px;"></p>
+        </div>
+    </div>
+
+    <!-- VIEW 4: THE GAME (CASINO FIZU) -->
+    <div class="view-container" id="view-game">
+        <div class="casino-cabinet">
+            <div class="header-bar">
+                <button onclick="switchView('view-dashboard')" class="btn btn-outline">← Back to Dashboard</button>
+                <div class="wallet-pill">
+                    <span>BALANCE</span>
+                    <strong>$<span id="game-balanceVal">0.00</span></strong>
+                </div>
+            </div>
+
+            <div class="history-bar" id="historyBar">
+                <span style="font-size: 10px; font-weight: 800; color: var(--text-sub);">HISTORY:</span>
+                <span style="color: var(--text-sub); font-size: 11px;">No rounds played yet</span>
+            </div>
+
+            <div class="stage-viewport">
+                <div class="hud-badge" id="statusBadge">READY TO PLAY</div>
+                <div class="hud-mult" id="topMult">1.00x</div>
+                <canvas id="gameCanvas" width="830" height="340"></canvas>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="panel-box">
+                    <div class="panel-label">WAGER AMOUNT ($)</div>
+                    <div class="input-row">
+                        <input type="number" id="betInput" value="10" min="1" max="10000">
+                    </div>
+                    <div class="quick-bets">
+                        <button class="q-btn" onclick="setBet(5)">$5</button>
+                        <button class="q-btn" onclick="setBet(10)">$10</button>
+                        <button class="q-btn" onclick="setBet(25)">$25</button>
+                        <button class="q-btn" onclick="setBet(50)">$50</button>
+                        <button class="q-btn" onclick="modBet(0.5)">½x</button>
+                        <button class="q-btn" onclick="modBet(2)">2x</button>
+                    </div>
+                </div>
+
+                <div class="panel-box">
+                    <div class="win-display">
+                        <span>POTENTIAL WINNINGS</span>
+                        <strong>$<span id="winVal">0.00</span></strong>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <button class="btn-giant btn-bet" id="betBtn" onclick="startBet()">PLACE BET</button>
+                        <button class="btn-giant btn-inflate" id="pumpBtn" onclick="pumpAir()">PUMP PRESSURE ⚡ (<span id="nextX">1.18x</span>)</button>
+                        <button class="btn-giant btn-cashout" id="cashoutBtn" onclick="cashOut()">CASH OUT ($<span id="cashVal">0.00</span>)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        let currentUser = null;
+
+        // View Router
+        function switchView(viewId) {
+            document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+
+            const navbar = document.getElementById('appNavbar');
+            if (viewId === 'view-login' || viewId === 'view-register') {
+                navbar.style.display = 'none';
+            } else {
+                navbar.style.display = 'flex';
+                renderNavbar();
+            }
+        }
+
+        function renderNavbar() {
+            const navActions = document.getElementById('navActions');
+            if (!currentUser) return;
+            navActions.innerHTML = `
+                <span style="font-size: 13px; color: var(--text-sub);">👤 <strong>${currentUser.username}</strong></span>
+                <button onclick="switchView('view-dashboard')" class="btn btn-outline">Dashboard</button>
+                <button onclick="logoutUser()" class="btn btn-danger">Log Out</button>
+            `;
+        }
+
+        // Auth API Handlers
+        async function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+                const data = await res.json();
+                if (!data.success) { alert(data.message); return; }
+
+                currentUser = data.user;
+                localStorage.setItem('active_email', currentUser.email);
+                syncBalance(currentUser.balance);
+                switchView('view-dashboard');
+            } catch (err) { alert('Registration network error.'); }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (!data.success) { alert(data.message); return; }
+
+                currentUser = data.user;
+                localStorage.setItem('active_email', currentUser.email);
+                syncBalance(currentUser.balance);
+                switchView('view-dashboard');
+            } catch (err) { alert('Login network error.'); }
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('active_email');
+            currentUser = null;
+            switchView('view-login');
+        }
+
+        async function loadUserData(email) {
+            try {
+                const res = await fetch(`/api/user/${email}`);
+                const data = await res.json();
+                if (data.success) {
+                    currentUser = data.user;
+                    syncBalance(currentUser.balance);
+                    switchView('view-dashboard');
+                } else {
+                    logoutUser();
+                }
+            } catch (e) { logoutUser(); }
+        }
+
+        function syncBalance(amount) {
+            currentUser.balance = parseFloat(amount);
+            document.getElementById('dash-balance').innerText = `$${currentUser.balance.toFixed(2)}`;
+            document.getElementById('game-balanceVal').innerText = currentUser.balance.toFixed(2);
+        }
+
+        // Deposit Verification
+        async function verifyDepositHash() {
+            const txHash = document.getElementById('tx-hash-input').value.trim();
+            const statusEl = document.getElementById('deposit-status');
+            if (!txHash) { statusEl.style.color = 'var(--danger)'; statusEl.innerText = 'Enter a valid transaction hash.'; return; }
+
+            statusEl.style.color = 'var(--text-sub)';
+            statusEl.innerText = 'Verifying transaction...';
+
+            try {
+                const res = await fetch('/api/verify-deposit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: currentUser.email, txHash })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    statusEl.style.color = 'var(--success)';
+                    statusEl.innerText = `✅ ${data.message}`;
+                    syncBalance(data.user.balance);
+                    document.getElementById('tx-hash-input').value = '';
+                } else {
+                    statusEl.style.color = 'var(--danger)';
+                    statusEl.innerText = `❌ ${data.message}`;
+                }
+            } catch (err) {
+                statusEl.style.color = 'var(--danger)';
+                statusEl.innerText = '❌ Network verification error.';
+            }
+        }
+
+        // Startup Check
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedEmail = localStorage.getItem('active_email');
+            if (savedEmail) {
+                loadUserData(savedEmail);
+            } else {
+                switchView('view-login');
+            }
+        });
+
+        // Ambient Background
+        const ambCanvas = document.getElementById("ambientCanvas");
+        const ambCtx = ambCanvas.getContext("2d");
+        let dustArray = [];
+
+        function initAmbient() {
+            ambCanvas.width = window.innerWidth;
+            ambCanvas.height = window.innerHeight;
+            dustArray = [];
+            for (let i = 0; i < 50; i++) {
+                dustArray.push({
+                    x: Math.random() * ambCanvas.width,
+                    y: Math.random() * ambCanvas.height,
+                    size: Math.random() * 2 + 0.5,
+                    vy: (Math.random() * 0.3 + 0.1) * -1,
+                    alpha: Math.random() * 0.5 + 0.1
+                });
+            }
+        }
+        window.addEventListener('resize', initAmbient);
+        initAmbient();
+
+        function drawAmbient() {
+            ambCtx.clearRect(0, 0, ambCanvas.width, ambCanvas.height);
+            ambCtx.fillStyle = "#ffffff";
+            dustArray.forEach(d => {
+                ambCtx.globalAlpha = d.alpha;
+                ambCtx.beginPath();
+                ambCtx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
+                ambCtx.fill();
+                d.y += d.vy;
+                if (d.y < 0) d.y = ambCanvas.height;
+            });
+            requestAnimationFrame(drawAmbient);
+        }
+        drawAmbient();
+
+        // Game Engine
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        let currentBet = 10.00;
+        let multiplier = 1.00;
+        let nextMultiplier = 1.15;
+        let stepCount = 0;
+        let gameActive = false;
+        let crashPoint = 1.50;
+        let gameHistory = [];
+        let balloonRadius = 45;
+        let targetRadius = 45;
+        let burstParticles = [], cashParticles = [], shockwaveR = 0, shockwaveA = 0, shakeTime = 0;
+
+        function updateGameUI() {
+            document.getElementById("topMult").innerText = multiplier.toFixed(2) + "x";
+            let payout = currentBet * multiplier;
+            document.getElementById("winVal").innerText = payout.toFixed(2);
+            document.getElementById("cashVal").innerText = payout.toFixed(2);
+            document.getElementById("nextX").innerText = nextMultiplier.toFixed(2) + "x";
+        }
+
+        function appendHistory(mult, isWin) {
+            gameHistory.unshift({ mult, win: isWin });
+            if (gameHistory.length > 15) gameHistory.pop();
+            let bar = document.getElementById("historyBar");
+            let html = '<span style="font-size: 10px; font-weight: 800; color: var(--text-sub);">HISTORY:</span>';
+            gameHistory.forEach(h => {
+                let cls = h.win ? 'win' : 'bust';
+                html += `<span class="history-pill ${cls}">${h.mult.toFixed(2)}x</span>`;
+            });
+            bar.innerHTML = html;
+        }
+
+        function setBet(amount) {
+            if (gameActive) return;
+            document.getElementById("betInput").value = amount;
+        }
+
+        function modBet(factor) {
+            if (gameActive) return;
+            let val = parseFloat(document.getElementById("betInput").value) || 0;
+            document.getElementById("betInput").value = Math.max(1, Math.round(val * factor));
+        }
+
+        function startBet() {
+            let inputVal = parseFloat(document.getElementById("betInput").value);
+            if (isNaN(inputVal) || inputVal <= 0) { alert("Enter a valid bet."); return; }
+            if (inputVal > currentUser.balance) { alert("Insufficient balance."); return; }
+
+            currentBet = inputVal;
+            syncBalance(currentUser.balance - currentBet);
+            multiplier = 1.00;
+            stepCount = 0;
+            gameActive = true;
+            targetRadius = 50;
+            balloonRadius = 50;
+
+            crashPoint = parseFloat((Math.random() * 4.5 + 1.25).toFixed(2));
+            nextMultiplier = parseFloat((multiplier + 0.15).toFixed(2));
+
+            document.getElementById("betBtn").style.display = "none";
+            document.getElementById("pumpBtn").style.display = "block";
+            document.getElementById("cashoutBtn").style.display = "block";
+            document.getElementById("statusBadge").innerText = "PRESSURIZING...";
+
+            updateGameUI();
+        }
+
+        function pumpAir() {
+            if (!gameActive) return;
+            if (nextMultiplier >= crashPoint || Math.random() < 0.15) {
+                triggerCrash();
+                return;
+            }
+            multiplier = nextMultiplier;
+            stepCount++;
+            targetRadius += 10;
+            nextMultiplier = parseFloat((multiplier + Math.random() * 0.2 + 0.08).toFixed(2));
+            updateGameUI();
+        }
+
+        function cashOut() {
+            if (!gameActive) return;
+            let winAmount = currentBet * multiplier;
+            syncBalance(currentUser.balance + winAmount);
+            gameActive = false;
+            shockwaveR = balloonRadius;
+            shockwaveA = 1.0;
+            appendHistory(multiplier, true);
+
+            document.getElementById("statusBadge").innerText = `CASHED OUT +$${winAmount.toFixed(2)}`;
+            resetRoundUI();
+        }
+
+        function triggerCrash() {
+            gameActive = false;
+            shakeTime = 15;
+            targetRadius = 2;
+            appendHistory(multiplier, false);
+            document.getElementById("statusBadge").innerText = "BURST!";
+            resetRoundUI();
+        }
+
+        function resetRoundUI() {
+            document.getElementById("pumpBtn").style.display = "none";
+            document.getElementById("cashoutBtn").style.display = "none";
+            document.getElementById("betBtn").style.display = "block";
+            document.getElementById("betBtn").innerText = "PLAY AGAIN";
+            updateGameUI();
+        }
+
+        function renderGameScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+
+            if (shakeTime > 0) {
+                ctx.translate((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10);
+                shakeTime--;
+            }
+
+            balloonRadius += (targetRadius - balloonRadius) * 0.15;
+            let cX = canvas.width / 2, cY = canvas.height / 2 - 5;
+
+            if (gameActive || balloonRadius > 8) {
+                let gradient = ctx.createRadialGradient(cX - 15, cY - 15, 5, cX, cY, balloonRadius);
+                gradient.addColorStop(0, '#00f2fe');
+                gradient.addColorStop(0.4, '#7928ca');
+                gradient.addColorStop(1, '#ff0080');
+
+                ctx.shadowColor = "#ff0080";
+                ctx.shadowBlur = Math.min(30, balloonRadius * 0.6);
+
+                ctx.beginPath();
+                ctx.arc(cX, cY, balloonRadius, 0, Math.PI * 2);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            ctx.restore();
+            requestAnimationFrame(renderGameScene);
+        }
+        renderGameScene();
+    </script>
 </body>
 </html>
