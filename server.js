@@ -1,43 +1,40 @@
 const express = require('express');
 const app = express();
-const express = require('express');
-const app = express();
 
+// Middleware
 app.use(express.json());
-
-// 👉 ADD THIS LINE: Tells Express to serve all static files (HTML, CSS, JS) from your current folder
+// Serves your index.html and static frontend files correctly from the root folder
 app.use(express.static(__dirname));
 
-// (Keep all your existing /api/register, /api/deposit, and game routes below this...)
-app.use(express.json());
+// Temporary in-memory database storage (Replace with your actual database if you have one)
+const users = [];
 
-// Example in-memory database or user store (replace with your actual database/JSON file logic)
-// Make sure new registrations default to balance: 0
-const users = []; // or your db connection
-
-// 1. REGISTRATION ROUTE (Default balance = 0)
+// 1. REGISTRATION ROUTE (Default balance is now 0)
 app.post('/api/register', (req, res) => {
   const { username, email, password } = req.body;
   
-  // Check if user exists...
   const newUser = {
     id: Date.now().toString(),
     username,
     email,
     password,
-    balance: 0 // <--- FIXED: Set default balance to 0 (was 100)
+    balance: 0 // FIXED: Default registration balance is now 0 (was 100)
   };
   
   users.push(newUser);
-  res.json({ success: true, message: 'Registered successfully', user: { id: newUser.id, username, balance: newUser.balance } });
+  res.json({ 
+    success: true, 
+    message: 'Registered successfully', 
+    user: { id: newUser.id, username, balance: newUser.balance } 
+  });
 });
 
-// 2. MULTI-CRYPTO HASH VERIFICATION FUNCTION
+// 2. MULTI-CRYPTO HASH VERIFICATION FUNCTION (BTC, SOL, ETH/USDT, TRX/USDT)
 function validateTransactionHash(hash, currency) {
   if (!hash || typeof hash !== 'string') return false;
   const cleanHash = hash.trim();
 
-  switch (currency.toUpperCase()) {
+  switch (currency ? currency.toUpperCase() : 'BTC') {
     case 'BTC':
       // Bitcoin TXID: 64 characters hex
       return /^[a-fA-F0-9]{64}$/.test(cleanHash);
@@ -57,21 +54,20 @@ function validateTransactionHash(hash, currency) {
       return /^[a-fA-F0-9]{64}$/.test(cleanHash);
 
     default:
-      // Fallback generic check
+      // Fallback check
       return /^([a-fA-F0-9]{64}|0x[a-fA-F0-9]{64})$/.test(cleanHash);
   }
 }
 
-// Example deposit route using the multi-crypto validator
+// Deposit verification route
 app.post('/api/deposit', (req, res) => {
-  const { userId, hash, currency } = req.body;
+  const { hash, currency } = req.body;
   
   if (!validateTransactionHash(hash, currency)) {
-    return res.status(400).json({ success: false, message: 'Invalid transaction hash format for ' + currency });
+    return.status(400).json({ success: false, message: 'Invalid transaction hash format' });
   }
 
-  // Process deposit...
-  res.json({ success: true, message: 'Deposit hash verified successfully!' });
+  res.json({ success: true, message: 'Transaction hash verified!' });
 });
 
 // 3. WIN/LOSS GAME ROUTE (Real-time balance updater)
@@ -84,18 +80,19 @@ app.post('/api/game/action', (req, res) => {
   }
 
   if (outcome === 'win') {
-    user.balance += Number(betAmount); // Add winnings
+    user.balance += Number(betAmount);
   } else if (outcome === 'loss') {
-    user.balance -= Number(betAmount); // Subtract loss
+    user.balance -= Number(betAmount);
     if (user.balance < 0) user.balance = 0;
   }
 
-  // CRITICAL: Return the updated balance immediately so frontend updates without relogin
+  // CRITICAL: Sends the updated balance back immediately so frontend updates instantly
   res.json({
     success: true,
     newBalance: user.balance,
-    message: `Game processed successfully`
+    message: 'Balance updated successfully'
   });
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
