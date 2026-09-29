@@ -53,7 +53,6 @@
             pointer-events: none;
         }
 
-        /* App View Container */
         .view-container {
             width: 100%;
             max-width: 920px;
@@ -69,7 +68,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Navbar */
         .navbar {
             width: 100%;
             max-width: 920px;
@@ -112,7 +110,6 @@
         .btn-outline:hover { background: rgba(255,255,255,0.1); }
         .btn-danger { background: rgba(255, 42, 95, 0.15); color: var(--danger); border: 1px solid rgba(255, 42, 95, 0.3); }
 
-        /* Auth Cards */
         .auth-card {
             background: var(--panel-bg);
             backdrop-filter: blur(30px);
@@ -141,7 +138,6 @@
         }
         .form-group input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,254,0.2); }
 
-        /* Dashboard & Wallet Cards */
         .card {
             background: var(--panel-bg);
             backdrop-filter: blur(30px);
@@ -165,7 +161,6 @@
         }
         .crypto-box code { color: var(--accent-cyan); font-family: monospace; font-size: 13px; word-break: break-all; }
 
-        /* Game Cabinet */
         .casino-cabinet {
             background: var(--panel-bg);
             backdrop-filter: blur(30px);
@@ -262,7 +257,7 @@
     <div class="ambient-bg"></div>
     <canvas class="ambient-canvas" id="ambientCanvas"></canvas>
 
-    <!-- Unified Navbar -->
+    <!-- Unified Navbar (Dashboard button removed) -->
     <header class="navbar" id="appNavbar" style="display: none;">
         <div class="logo" onclick="switchView('view-dashboard')">👑 CASINO FIZU</div>
         <div class="nav-btns" id="navActions"></div>
@@ -328,7 +323,7 @@
 
         <div class="card">
             <h3 style="margin-bottom: 6px;">Deposit Crypto</h3>
-            <p style="color: var(--text-sub); font-size: 13px; margin-bottom: 16px;">Transfer funds to any address below and verify your transaction hash ID to credit your balance instantly.</p>
+            <p style="color: var(--text-sub); font-size: 13px; margin-bottom: 16px;">Transfer funds to any address below and verify your transaction hash ID to credit your balance automatically.</p>
             
             <div class="crypto-box">
                 <strong>USDC (ERC-20) / ETH:</strong>
@@ -413,7 +408,6 @@
     <script>
         let currentUser = null;
 
-        // View Router
         function switchView(viewId) {
             document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
@@ -430,14 +424,13 @@
         function renderNavbar() {
             const navActions = document.getElementById('navActions');
             if (!currentUser) return;
+            // Dashboard button completely removed here
             navActions.innerHTML = `
                 <span style="font-size: 13px; color: var(--text-sub);">👤 <strong>${currentUser.username}</strong></span>
-                <button onclick="switchView('view-dashboard')" class="btn btn-outline">Dashboard</button>
                 <button onclick="logoutUser()" class="btn btn-danger">Log Out</button>
             `;
         }
 
-        // Auth API Handlers
         async function handleRegister(e) {
             e.preventDefault();
             const username = document.getElementById('reg-username').value;
@@ -507,14 +500,13 @@
             document.getElementById('game-balanceVal').innerText = currentUser.balance.toFixed(2);
         }
 
-        // Deposit Verification
         async function verifyDepositHash() {
             const txHash = document.getElementById('tx-hash-input').value.trim();
             const statusEl = document.getElementById('deposit-status');
             if (!txHash) { statusEl.style.color = 'var(--danger)'; statusEl.innerText = 'Enter a valid transaction hash.'; return; }
 
             statusEl.style.color = 'var(--text-sub)';
-            statusEl.innerText = 'Verifying transaction...';
+            statusEl.innerText = 'Checking blockchain explorer for transaction confirmation...';
 
             try {
                 const res = await fetch('/api/verify-deposit', {
@@ -538,7 +530,6 @@
             }
         }
 
-        // Startup Check
         document.addEventListener('DOMContentLoaded', () => {
             const savedEmail = localStorage.getItem('active_email');
             if (savedEmail) {
@@ -548,7 +539,6 @@
             }
         });
 
-        // Ambient Background
         const ambCanvas = document.getElementById("ambientCanvas");
         const ambCtx = ambCanvas.getContext("2d");
         let dustArray = [];
@@ -585,7 +575,6 @@
         }
         drawAmbient();
 
-        // Game Engine
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
@@ -598,7 +587,7 @@
         let gameHistory = [];
         let balloonRadius = 45;
         let targetRadius = 45;
-        let burstParticles = [], cashParticles = [], shockwaveR = 0, shockwaveA = 0, shakeTime = 0;
+        let shakeTime = 0;
 
         function updateGameUI() {
             document.getElementById("topMult").innerText = multiplier.toFixed(2) + "x";
@@ -673,8 +662,6 @@
             let winAmount = currentBet * multiplier;
             syncBalance(currentUser.balance + winAmount);
             gameActive = false;
-            shockwaveR = balloonRadius;
-            shockwaveA = 1.0;
             appendHistory(multiplier, true);
 
             document.getElementById("statusBadge").innerText = `CASHED OUT +$${winAmount.toFixed(2)}`;
