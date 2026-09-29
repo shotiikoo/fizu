@@ -1,82 +1,86 @@
-// --- AUTHENTICATION & STORAGE LOGIC ---
-
-// Handle Registration
-function handleRegister(e) {
+// Register API Handler
+async function handleRegister(e) {
     e.preventDefault();
     const username = document.getElementById('reg-username').value;
     const email = document.getElementById('reg-email').value;
     const password = document.getElementById('reg-password').value;
 
-    let users = JSON.parse(localStorage.getItem('platform_users')) || [];
-    
-    // Check if email exists
-    if(users.some(u => u.email === email)) {
-        alert('An account with this email already exists!');
-        return;
-    }
+    try {
+        const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password })
+        });
+        const data = await response.json();
 
-    // Save new user with initial balance
-    users.push({ username, email, password, balance: 0, usedHashes: [] });
-    localStorage.setItem('platform_users', JSON.stringify(users));
-    
-    // Auto log them in
-    localStorage.setItem('active_user', email);
-    window.location.href = 'dashboard.html';
+        if (!data.success) {
+            alert(data.message);
+            return;
+        }
+
+        localStorage.setItem('active_email', data.user.email);
+        window.location.href = 'dashboard.html';
+    } catch (err) {
+        alert('Network error during registration.');
+    }
 }
 
-// Handle Login
-function handleLogin(e) {
+// Login API Handler
+async function handleLogin(e) {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
 
-    let users = JSON.parse(localStorage.getItem('platform_users')) || [];
-    const user = users.find(u => u.email === email && u.password === password);
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
 
-    if(!user) {
-        alert('Invalid email or password!');
-        return;
+        if (!data.success) {
+            alert(data.message);
+            return;
+        }
+
+        localStorage.setItem('active_email', data.user.email);
+        window.location.href = 'dashboard.html';
+    } catch (err) {
+        alert('Network error during login.');
     }
-
-    localStorage.setItem('active_user', email);
-    window.location.href = 'dashboard.html';
 }
 
-// Log out user
 function logoutUser() {
-    localStorage.removeItem('active_user');
+    localStorage.removeItem('active_email');
     window.location.href = 'login.html';
 }
 
-// Log out admin
-function logoutAdmin() {
-    window.location.href = 'index.html';
-}
-
-
-// --- DASHBOARD & HASH VERIFICATION LOGIC ---
-
-document.addEventListener('DOMContentLoaded', () => {
-    const activeEmail = localStorage.getItem('active_user');
+// Page initialization & routing checks
+document.addEventListener('DOMContentLoaded', async () => {
+    const activeEmail = localStorage.getItem('active_email');
     const path = window.location.pathname;
 
-    // Protect Dashboard route
     if (path.includes('dashboard.html')) {
         if (!activeEmail) {
             window.location.href = 'login.html';
             return;
         }
-        updateDashboardUI();
+        fetchUserData(activeEmail);
     }
 
-    // Protect or load Admin metrics if on admin page
     if (path.includes('alexmaritn331616.html')) {
-        let users = JSON.parse(localStorage.getItem('platform_users')) || [];
-        const userCountEl = document.getElementById('admin-user-count');
-        if(userCountEl) userCountEl.innerText = users.length;
+        try {
+            const res = await fetch('/api/admin/stats');
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('admin-user-count').innerText = data.totalUsers;
+            }
+        } catch (e) {
+            document.getElementById('admin-user-count').innerText = 'Error';
+        }
     }
 
-    // Update navbar on index if logged in
     if (path.includes('index.html') || path === '/' || path.endsWith('/')) {
         const navMenu = document.getElementById('nav-menu');
         if (navMenu && activeEmail) {
@@ -88,22 +92,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function updateDashboardUI() {
-    const activeEmail = localStorage.getItem('active_user');
-    let users = JSON.parse(localStorage.getItem('platform_users')) || [];
-    const user = users.find(u => u.email === activeEmail);
-
-    if (user) {
-        document.getElementById('user-display').innerText = `👤 ${user.username}`;
-        document.getElementById('user-balance').innerText = `$${user.balance.toFixed(2)}`;
+async function fetchUserData(email) {
+    try {
+        const res = await fetch(`/api/user/${email}`);
+        const data = await res.json();
+        if (data.success) {
+            document.getElementById('user-display').innerText = `👤 ${data.user.username}`;
+            document.getElementById('user-balance').innerText = `$${parseFloat(data.user.balance).toFixed(2)}`;
+        } else {
+            logoutUser();
+        }
+    } catch (e) {
+        console.error('Failed to fetch user data');
     }
 }
 
-// Automated Hash ID Deposit Checker Simulation
-function verifyDepositHash() {
+// Automated Hash Verification API Call
+async function verifyDepositHash() {
     const hashInput = document.getElementById('tx-hash-input');
     const statusEl = document.getElementById('deposit-status');
     const txHash = hashInput.value.trim();
+    const email = localStorage.getItem('active_email');
 
     if (!txHash) {
         statusEl.style.color = 'var(--danger)';
@@ -112,39 +121,30 @@ function verifyDepositHash() {
     }
 
     statusEl.style.color = 'var(--warning)';
-    statusEl.innerText = 'Checking blockchain network...';
+    statusEl.innerText = 'Querying database & blockchain...';
 
-    setTimeout(() => {
-        let users = JSON.parse(localStorage.getItem('platform_users')) || [];
-        const activeEmail = localStorage.getItem('active_user');
-        let userIndex = users.findIndex(u => u.email === activeEmail);
+    try {
+        const response = await fetch('/api/verify-deposit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, txHash })
+        });
+        const data = await response.json();
 
-        if (userIndex === -1) return;
-
-        // Ensure user has array for tracking used hashes
-        if (!users[userIndex].usedHashes) {
-            users[userIndex].usedHashes = [];
-        }
-
-        // Prevent double spending / re-using same hash
-        if (users[userIndex].usedHashes.includes(txHash)) {
+        if (!data.success) {
             statusEl.style.color = 'var(--danger)';
-            statusEl.innerText = '❌ Error: This transaction hash has already been processed.';
+            statusEl.innerText = `❌ ${data.message}`;
             return;
         }
 
-        // Simulate a successful verification credit (e.g., adding $50.00 standard test deposit)
-        const depositAmount = 50.00;
-        users[userIndex].balance += depositAmount;
-        users[userIndex].usedHashes.push(txHash);
-
-        // Save back to localStorage
-        localStorage.setItem('platform_users', JSON.stringify(users));
-
         statusEl.style.color = 'var(--success)';
-        statusEl.innerText = `✅ Success! Transaction verified. Credited $${depositAmount.toFixed(2)} to your balance.`;
+        statusEl.innerText = `✅ ${data.message}`;
         hashInput.value = '';
         
-        updateDashboardUI();
-    }, 1200);
+        // Update live balance display
+        document.getElementById('user-balance').innerText = `$${parseFloat(data.user.balance).toFixed(2)}`;
+    } catch (err) {
+        statusEl.style.color = 'var(--danger)';
+        statusEl.innerText = '❌ Network connection error.';
+    }
 }
