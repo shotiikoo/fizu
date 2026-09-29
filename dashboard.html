@@ -10,7 +10,7 @@
     <header class="navbar">
         <div class="logo">WebPlatform <span>Dashboard</span></div>
         <nav style="display: flex; align-items: center; gap: 1rem;">
-            <a href="https://royal1899.server" target="_blank" class="btn sm-btn primary-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; text-decoration: none;">🎮 Launch Game</a>
+            <a href="bushti.html" class="btn sm-btn primary-btn" style="background: linear-gradient(135deg, #7928ca, #ff0080); color: white; text-decoration: none;">🎮 Launch Game</a>
             <span id="user-display" style="color: var(--text-secondary);"></span>
             <button onclick="logoutUser()" class="btn sm-btn danger-btn">Log Out</button>
         </nav>
@@ -24,14 +24,14 @@
                 <p style="font-size: 2.2rem; font-weight: bold; color: var(--success);" id="user-balance">$0.00</p>
             </div>
             <div>
-                <a href="https://royal1899.server" target="_blank" class="btn primary-btn" style="padding: 0.8rem 1.5rem; font-size: 1.1rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; text-decoration: none; display: inline-block;">🎮 Launch Game (Royal 1899)</a>
+                <a href="bushti.html" class="btn primary-btn" style="padding: 0.8rem 1.5rem; font-size: 1.1rem; background: linear-gradient(135deg, #7928ca, #ff0080); color: white; text-decoration: none; display: inline-block;">🎮 Launch Game (Casino Fizu)</a>
             </div>
         </div>
 
         <!-- Deposit Addresses Card -->
         <div class="card" style="margin-bottom: 2rem;">
             <h3>Deposit Addresses</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Send funds to any of the official addresses below, then copy your transaction Hash ID (TxID) to verify and credit your balance.</p>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Send funds to any of the official addresses below, then enter your transaction Hash ID (TxID) to verify and credit your balance.</p>
             
             <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem;">
                 <div style="background: var(--bg-color); padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
@@ -52,7 +52,7 @@
         <!-- Automated Deposit Verifier Card -->
         <div class="card">
             <h3>Automated Deposit Verifier</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Paste your transaction Hash ID (TxID) below after sending funds to instantly credit your balance.</p>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Paste your valid transaction Hash ID (TxID) below. The system will inspect the transaction on-chain to credit your correct deposit amount.</p>
             
             <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                 <input type="text" id="tx-hash-input" placeholder="Paste Transaction Hash ID (e.g., 0x9f8...)" style="flex: 1; padding: 0.7rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-color); color: white; min-width: 280px;">
