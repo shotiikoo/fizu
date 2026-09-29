@@ -6,13 +6,13 @@
 </head>
 <body>
 
-    <!-- REGISTRATION FORM (Placeholders changed) -->
+    <!-- REGISTRATION FORM -->
     <div id="register-section">
         <h2>Register</h2>
         <form id="registerForm">
-            <!-- FIXED: Changed alexmartin placeholders -->
-            <input type="text" id="regUser" placeholder="e.g., player123" required />
-            <input type="email" id="regEmail" placeholder="player@example.com" required />
+            <!-- FIXED: Changed to alexmartin examples -->
+            <input type="text" id="regUser" placeholder="e.g., alexmartin" required />
+            <input type="email" id="regEmail" placeholder="alexmartin@gmail.com" required />
             <input type="password" id="regPass" placeholder="Password" required />
             <button type="submit">Sign Up</button>
         </form>
@@ -71,7 +71,7 @@
         const data = await response.json();
 
         if (data.success) {
-            // CRITICAL: Immediately update frontend balance without needing re-login
+            // Immediately update frontend balance without needing re-login
             document.getElementById('displayBalance').innerText = data.newBalance.toFixed(2);
         }
     }
